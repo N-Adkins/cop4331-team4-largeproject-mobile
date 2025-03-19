@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:group4_mobile_app/api.dart';
+import 'package:group4_mobile_app/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'My Flutter Demo Home Page'),
+      home: RegisterPage(),
     );
   }
 }
@@ -66,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
       "lastName": "AppTestLast01",
       "email": "apptest@gmail.com",
     });
-    log(response);
+
 
     setState(() {
       // This call to setState tells the Flutter framework that something has

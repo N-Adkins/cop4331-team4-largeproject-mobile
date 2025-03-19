@@ -11,7 +11,7 @@ class SignupResponse {
 class ApiService {
   static String baseUrl = "http://coolestappever.xyz:5000/api";
 
-  static Future<String> postJson<Payload>(String endpoint, Payload payload) async {
+  static Future<Map<String, dynamic>> postJson<Payload>(String endpoint, Payload payload) async {
     try {
       var url = Uri.parse(baseUrl + endpoint);
       var response = await http.post(
@@ -22,13 +22,13 @@ class ApiService {
         body: jsonEncode(payload),
       );
       if (response.statusCode == 200) {
-        return response.body;
+        return jsonDecode(response.body);
       } else {
         log("Returned status ${response.statusCode}");
       }
     } catch (e) {
       log(e.toString());
     }
-    return "{}";
+    return {};
   }
 }
