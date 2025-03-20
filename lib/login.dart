@@ -1,6 +1,7 @@
 //login page, need logo, route to register, route to mainMenu, and apis
 
 import 'package:flutter/material.dart';
+import 'register.dart';
 
 void main() {
   runApp(MyApp());
@@ -95,9 +96,9 @@ class _LoginPageState extends State<LoginPage> {
                   print("Go to register screen");
 
                   // Navigate to the register page when the user clicks the text
-                  //Navigator.push(
-                  //context,
-                  //MaterialPageRoute(builder: (context) => RegisterPage()),);
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterPage()),);
                 },
                 child: Text(
                   'Don\'t have an account? Register here',

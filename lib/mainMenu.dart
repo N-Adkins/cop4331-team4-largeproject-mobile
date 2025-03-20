@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//the default generated webpage, TO BE DELETED
+
 void main() {
   //this is the root widget of the app
   runApp(MyApp());
