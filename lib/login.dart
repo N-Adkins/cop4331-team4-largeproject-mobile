@@ -1,9 +1,12 @@
-//login page, need logo, route to register, route to mainMenu, and apis
+//login page: login API
 
 import 'package:flutter/material.dart';
 import 'register.dart';
+import 'mainMenu.dart';
 import 'dart:developer';
 import 'package:group4_mobile_app/api.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -27,8 +30,6 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String? login;
   String? password;
-  //final TextEditingController _usernameController = TextEditingController();
-  //final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,24 +40,24 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(  // Wrap the content with Form widget to manage validation and saving
+        child: Form(  //Wrap the content with Form widget to manage validation
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // Logo section - replace with your image asset
+              //Logo section
               Align(
                 alignment: Alignment.topLeft,
                 child: Image.asset(
-                  'assets/images/clarityIcon.png', // Make sure to add the logo image in the assets folder
-                  width: 100, // Adjust as needed
-                  height: 100, // Adjust as needed
+                  'assets/images/clarityIcon.png', //make sure to add the logo image in the assets folder
+                  width: 100,
+                  height: 100,
                 ),
               ),
               SizedBox(height: 30),
 
-              // Username input field
+              //username input field
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Username',
@@ -72,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 16),
 
-              // Password input field
+              //password input field
               TextFormField(
                 obscureText: true,
                 decoration: InputDecoration(
@@ -89,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 24),
 
-              // Login button
+              //Login button
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -99,35 +100,42 @@ class _LoginPageState extends State<LoginPage> {
                       "password": password!,
                     }).then((response) {
                       if (response["error"] != null) {
-                        if (response["error"] == "") {
+                        if (response["error"] == '') {
+                          /*when fixed, login the user and delete the SnackBar lines
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Successfully logged in'))
+                          );*/
+                          // Redirect to main menu page
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => EmptyPage()), // Make sure MainMenuPage is imported
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(response["error"].toString()))
+                              SnackBar(content: Text(response["error"].toString())),
                           );
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(response["error"].toString()))
+                            SnackBar(content: Text("Internal Server Error"))
                         );
+
                       }
                     });
                   }
                 },
                 child: Text('Login'),
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50), // Make button full width
+                  minimumSize: Size(double.infinity, 50),
                 ),
               ),
               SizedBox(height: 20),
 
-              // Register section
+              //Register section
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    // Navigate to the register page when the user clicks the text
+                    //Navigate to the register page when the user clicks the text
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => RegisterPage()),
