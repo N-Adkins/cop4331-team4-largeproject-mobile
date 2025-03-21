@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'register.dart';
+import 'dart:developer';
+import 'package:group4_mobile_app/api.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,8 +24,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String? login;
+  String? password;
+  //final TextEditingController _usernameController = TextEditingController();
+  //final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,83 +39,111 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: Form(  // Wrap the content with Form widget to manage validation and saving
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            // Logo section - replace with your image asset
-            //IN: Add the logo image to your Flutter project under the assets folder.
-//Update the pubspec.yaml file to include the assets
-            Align(
-              alignment: Alignment.topLeft,
-              child: Image.asset(
-                'assets/images/clarityIcon.png', // Make sure to add the logo image in the assets folder
-                width: 100, // Adjust as needed
-                height: 100, // Adjust as needed
+              // Logo section - replace with your image asset
+              Align(
+                alignment: Alignment.topLeft,
+                child: Image.asset(
+                  'assets/images/clarityIcon.png', // Make sure to add the logo image in the assets folder
+                  width: 100, // Adjust as needed
+                  height: 100, // Adjust as needed
+                ),
               ),
-            ),
-            SizedBox(height: 30),
+              SizedBox(height: 30),
 
-            // Username input field
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // Password input field
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 24),
-
-            // Login button
-            ElevatedButton(
-              onPressed: () {
-                // Handle login logic here
-                String username = _usernameController.text;
-                String password = _passwordController.text;
-                // Implement login logic (e.g., check credentials)
-                print('Logging in with username: $username and password: $password');
-              },
-              child: Text('Login'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), // Make button full width
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Register section
-            Center(
-              child: GestureDetector(
-                onTap: () {
-                  // Handle register navigation default
-                  print("Go to register screen");
-
-                  // Navigate to the register page when the user clicks the text
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterPage()),);
+              // Username input field
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter Username';
+                  }
+                  return null;
                 },
-                child: Text(
-                  'Don\'t have an account? Register here',
-                  style: TextStyle(
+                onSaved: (value) => login = value,
+              ),
+              SizedBox(height: 16),
 
-                    color: Colors.blue,
-                    fontSize: 16,
+              // Password input field
+              TextFormField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter Password';
+                  }
+                  return null;
+                },
+                onSaved: (value) => password = value,
+              ),
+              SizedBox(height: 24),
+
+              // Login button
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    ApiService.postJson("/login", <String, String>{
+                      "login": login!,
+                      "password": password!,
+                    }).then((response) {
+                      if (response["error"] != null) {
+                        if (response["error"] == "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Successfully logged in'))
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(response["error"].toString()))
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(response["error"].toString()))
+                        );
+                      }
+                    });
+                  }
+                },
+                child: Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50), // Make button full width
+                ),
+              ),
+              SizedBox(height: 20),
+
+              // Register section
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigate to the register page when the user clicks the text
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    );
+                  },
+                  child: Text(
+                    'Don\'t have an account? Register here',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
