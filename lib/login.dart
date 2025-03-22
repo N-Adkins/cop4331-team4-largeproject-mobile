@@ -1,5 +1,3 @@
-//login page: login API
-
 import 'package:flutter/material.dart';
 import 'register.dart';
 import 'mainMenu.dart';
@@ -101,10 +99,6 @@ class _LoginPageState extends State<LoginPage> {
                     }).then((response) {
                       if (response["error"] != null) {
                         if (response["error"] == '') {
-                          /*when fixed, login the user and delete the SnackBar lines
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Successfully logged in'))
-                          );*/
                           // Redirect to main menu page
                           Navigator.pushReplacement(
                             context,
