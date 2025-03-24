@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.black,
                     child: Center(
                       child: Image.asset(
-                        'assets/images/clarityIcon.png', // Logo image in assets
+                        'assets/images/clarity-logo.png', // Logo image in assets
                         width: 100,
                         height: 100,
                       ),

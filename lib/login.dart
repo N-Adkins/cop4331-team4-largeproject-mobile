@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Image.asset(
-                  'assets/images/clarityIcon.png', //make sure to add the logo image in the assets folder
+                  'assets/images/clarity-logo.png', //make sure to add the logo image in the assets folder
                   width: 100,
                   height: 100,
                 ),
