@@ -22,6 +22,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Variable to track the selected body content
+  Widget _currentBody = Center(
+    child: Text(
+      'Welcome to Clarity!',
+      style: TextStyle(fontSize: 24, color: Color.fromARGB(200, 208, 0, 255)),
+    ),
+  );
+
+  // Function to update the body
+  void _updateBody(Widget body) {
+    setState(() {
+      _currentBody = body;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.black,
                     child: Center(
                       child: Image.asset(
-                        'assets/images/clarityIcon.png', //make sure to add the logo image in the assets folder
+                        'assets/images/clarityIcon.png', // Logo image in assets
                         width: 100,
                         height: 100,
                       ),
@@ -69,13 +84,32 @@ class _HomePageState extends State<HomePage> {
                     ],
                     onChanged: (value) {
                       if (value == 'home') {
-                        Navigator.pushNamed(context, '/');
+                        _updateBody(
+                          Center(
+                            child: Text(
+                              'Welcome to Clarity!',
+                              style: TextStyle(fontSize: 24, color: Color.fromARGB(200, 208, 0, 255)),
+                            ),
+                          ),
+                        );
                       } else if (value == 'Notes') {
-                        // You can replace with another route, see login/logout example
-                        print('Navigate to Services');
-                      } else if (value == 'FlashCards') {
-                        // You can replace with another route
-                        print('Navigate to Contact');
+                        _updateBody(
+                          Center(
+                            child: Text(
+                              'Notes APIs.',
+                              style: TextStyle(fontSize: 24, color: Color.fromARGB(200, 208, 0, 255)),
+                            ),
+                          ),
+                        );
+                      } else if (value == 'Flashcard') {
+                        _updateBody(
+                          Center(
+                            child: Text(
+                              'Flashcard APIs.',
+                              style: TextStyle(fontSize: 24, color: Color.fromARGB(200, 208, 0, 255)),
+                            ),
+                          ),
+                        );
                       }
                     },
                   ),
@@ -86,21 +120,19 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => RegisterPage()), // Make sure HomePage is imported
-                      );                    },
-                    child: Text('register'),
+                      _updateBody(RegisterPage()); // Update body to RegisterPage
+                    },
+                    child: Text('Register'),
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPage()), // Make sure HomePage is imported
+                        MaterialPageRoute(builder: (context) => LoginPage()), // Navigates to LoginPage
                       );
                     },
-                    child: Text('Login'),
+                    child: Text('Logput'),
                   ),
                 ],
               ),
@@ -108,12 +140,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Center(
-        child: Text(
-          'Welcome to Clarity!',
-          style: TextStyle(fontSize: 24, color : Color.fromARGB(200, 208, 0, 255)),
-        ),
-      ),
+      body: _currentBody, // The dynamic body content
     );
   }
 }
