@@ -120,9 +120,9 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      _updateBody(RegisterPage()); // Update body to RegisterPage
+                      _updateBody(AboutPage()); // Update body to RegisterPage
                     },
-                    child: Text('Register'),
+                    child: Text('About Us'),
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                         MaterialPageRoute(builder: (context) => LoginPage()), // Navigates to LoginPage
                       );
                     },
-                    child: Text('Logput'),
+                    child: Text('Logout'),
                   ),
                 ],
               ),
