@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:group4_mobile_app/session.dart';
 import 'register.dart';
 import 'mainMenu.dart';
 import 'dart:developer';
@@ -99,6 +100,8 @@ class _LoginPageState extends State<LoginPage> {
                     }).then((response) {
                       if (response["error"] != null) {
                         if (response["error"] == '') {
+                          Session.init(response['token']['accessToken']!);
+
                           // Redirect to main menu page
                           Navigator.pushReplacement(
                             context,
