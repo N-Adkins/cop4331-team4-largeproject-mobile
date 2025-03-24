@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register.dart';
-import 'mainMenu.dart';
+import 'main.dart';
 import 'dart:developer';
 import 'package:group4_mobile_app/api.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Redirect to main menu page
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => EmptyPage()), // Make sure MainMenuPage is imported
+                            MaterialPageRoute(builder: (context) => HomePage()), // Make sure HomePage is imported
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
