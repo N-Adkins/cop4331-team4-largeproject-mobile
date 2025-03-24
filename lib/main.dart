@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:group4_mobile_app/api.dart';
+import 'package:group4_mobile_app/login.dart';
 import 'package:group4_mobile_app/register.dart';
 
 void main() {
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: RegisterPage(),
+      home: LoginPage(),
     );
   }
 }
