@@ -86,13 +86,18 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Flashcard Decks"),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Text('Flashcard Decks', style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              color: Colors.deepPurple,
+            )),
+
+            SizedBox(height: 20),
+
             // Search bar
             TextField(
               controller: _searchController,

@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80),
         child: AppBar(
-          backgroundColor: Color.fromARGB(255, 50, 50, 50), // Dark Gray
+          backgroundColor: Color.fromARGB(255, 60, 60, 60), // Dark Gray
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -54,14 +54,11 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Container(
-                    width: 50,
-                    height: 50,
-                    color: Colors.black,
                     child: Center(
                       child: Image.asset(
-                        'assets/images/clarity-logo.png', // Logo image in assets
-                        width: 100,
-                        height: 100,
+                        'assets/images/clarity.png', // Logo image in assets
+                        width: 50,
+                        height: 50,
                       ),
                     ),
                   ),
