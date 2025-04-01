@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:group4_mobile_app/searchNotes.dart';
 import 'login.dart';
 import 'about.dart';
 import 'register.dart';
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePage(), // Use HomePage instead of LoginPage as the initial screen
+      home: LoginPage(), // Use HomePage instead of LoginPage as the initial screen
     );
   }
 }
@@ -126,14 +127,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: Text('Notes'),
               onTap: () {
-                _updateBody(
-                  Center(
-                    child: Text(
-                      'Notes APIs.',
-                      style: TextStyle(fontSize: 24, color: Color.fromARGB(200, 208, 0, 255)),
-                    ),
-                  ),
-                );
+                _updateBody(SearchNotesPage());
                 Navigator.pop(context); // Close the drawer
               },
             ),

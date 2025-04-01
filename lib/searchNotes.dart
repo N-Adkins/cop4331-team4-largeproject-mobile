@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:group4_mobile_app/noteViewer.dart';
 import 'dart:developer';
 import 'session.dart';
 import 'api.dart'; // Import ApiService
 
-class searchFlashCardDeck extends StatefulWidget {
+class SearchNotesPage extends StatefulWidget {
   @override
-  _SearchFlashCardDeck createState() => _SearchFlashCardDeck();
+  _SearchNotesPageState createState() => _SearchNotesPageState();
 }
 
-class DeckInfo {
-  int deckId;
+class NoteInfo {
+  int id;
   String title;
 
-  DeckInfo(this.deckId, this.title);
+  NoteInfo(this.id, this.title);
 }
 
-class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
+class _SearchNotesPageState extends State<SearchNotesPage> {
   TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  List<DeckInfo> _decks = [];
+  List<NoteInfo> _notes = [];
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -29,8 +30,8 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
     });
   }
 
-  // Fetch the flashcards based on the search query
-  Future<void> _fetchFlashCardDecks() async {
+  // Fetch the notes based on the search query
+  Future<void> _fetchNotes() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -41,19 +42,18 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
       'jwtToken': Session.token!,
       'search': _searchQuery,
       'userId': Session.userId.toString(), // Use the user ID from the Session class
-      //'jwtToken': Session.token.toString(),
     };
 
     try {
-      final response = await ApiService.postJson("/search_flashcard_decks", requestData);
+      final response = await ApiService.postJson("/search_notes", requestData);
 
       // Process the response and update the UI
       if (response['error'] == null || response['error'] == '') {
         log(response['results'].toString());
         setState(() {
-          _decks = [];
-          response['results'].forEach((deck) {
-            _decks.add(DeckInfo(deck[1], deck[2]));
+          _notes = [];
+          response['results'].forEach((note) {
+            _notes.add(NoteInfo(note[1], note[2]));
           });
         });
       } else {
@@ -81,14 +81,14 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
   @override
   void initState() {
     super.initState();
-    _fetchFlashCardDecks();
+    _fetchNotes();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flashcard Decks"),
+        title: Text("Notes"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -110,7 +110,7 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
 
             // Search Button
             ElevatedButton(
-              onPressed: _fetchFlashCardDecks,
+              onPressed: _fetchNotes,
               child: Text('Search'),
             ),
 
@@ -125,17 +125,19 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
             // Displaying the list of flashcard decks
             Expanded(
               child: ListView.builder(
-                itemCount: _decks.length,
+                itemCount: _notes.length,
                 itemBuilder: (context, index) {
-                  var deck = _decks[index];
+                  var note = _notes[index];
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
-                      title: Text(deck.title),
+                      title: Text(note.title),
                       trailing: ElevatedButton(
                         onPressed: () {
-                          log('Button pressed for ${deck.title}');
-                          // Add any action for the button, like navigating to the deck details
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NoteViewer(noteId: note.id, title: note.title)),
+                          );
                         },
                         child: Text('Open'),
                       ),
