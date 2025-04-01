@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:group4_mobile_app/noteViewer.dart';
 import 'dart:developer';
 import 'session.dart';
 import 'api.dart'; // Import ApiService
@@ -9,10 +10,10 @@ class SearchNotesPage extends StatefulWidget {
 }
 
 class NoteInfo {
-  int noteId;
+  int id;
   String title;
 
-  NoteInfo(this.noteId, this.title);
+  NoteInfo(this.id, this.title);
 }
 
 class _SearchNotesPageState extends State<SearchNotesPage> {
@@ -133,8 +134,10 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
                       title: Text(note.title),
                       trailing: ElevatedButton(
                         onPressed: () {
-                          log('Button pressed for ${note.title}');
-                          // Add any action for the button, like navigating to the deck details
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NoteViewer(noteId: note.id, title: note.title)),
+                          );
                         },
                         child: Text('Open'),
                       ),
