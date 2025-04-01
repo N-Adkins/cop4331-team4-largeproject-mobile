@@ -54,14 +54,11 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Container(
-                    width: 50,
-                    height: 50,
-                    color: Colors.black,
                     child: Center(
                       child: Image.asset(
-                        'assets/images/clarity-logo.png', // Logo image in assets
-                        width: 100,
-                        height: 100,
+                        'assets/images/clarity.png', // Logo image in assets
+                        width: 50,
+                        height: 50,
                       ),
                     ),
                   ),

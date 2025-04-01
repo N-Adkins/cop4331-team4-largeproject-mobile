@@ -33,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         //title: Text("Login Page"),
         automaticallyImplyLeading: false, // To remove the default back button
@@ -46,14 +47,22 @@ class _LoginPageState extends State<LoginPage> {
             children: [
 
               //Logo section
-              Align(
-                alignment: Alignment.topLeft,
+              Center(
                 child: Image.asset(
-                  'assets/images/clarity-logo.png', //make sure to add the logo image in the assets folder
-                  width: 100,
-                  height: 100,
+                  'assets/images/clarity.png', //make sure to add the logo image in the assets folder
+                  width: 200,
+                  height: 200,
                 ),
               ),
+
+              Center(
+                child: Text('Clarity', style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(0, 0, 0, 100),
+                )),
+              ),
+
               SizedBox(height: 30),
 
               //username input field
