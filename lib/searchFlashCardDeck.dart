@@ -41,6 +41,7 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
       'jwtToken': Session.token!,
       'search': _searchQuery,
       'userId': Session.userId.toString(), // Use the user ID from the Session class
+      //'jwtToken': Session.token.toString(),
     };
 
     try {
