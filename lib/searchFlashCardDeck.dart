@@ -30,8 +30,9 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
 
     // Create the request body to send to the API
     final Map<String, String> requestData = {
-      'searchQuery': _searchQuery,
+      'search': _searchQuery,
       'userId': Session.userId.toString(), // Use the user ID from the Session class
+      'jwtToken': Session.token.toString(),
     };
 
     try {
