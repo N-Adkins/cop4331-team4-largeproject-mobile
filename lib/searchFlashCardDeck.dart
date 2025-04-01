@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'session.dart';
 import 'api.dart'; // Import ApiService
 
@@ -30,7 +31,8 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
 
     // Create the request body to send to the API
     final Map<String, String> requestData = {
-      'searchQuery': _searchQuery,
+      'jwtToken': Session.token!,
+      'search': _searchQuery,
       'userId': Session.userId.toString(), // Use the user ID from the Session class
     };
 
@@ -38,10 +40,15 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
       final response = await ApiService.postJson("/search_flashcard_decks", requestData);
 
       // Process the response and update the UI
-      if (response['error'] == null) {
-        // Assuming the API response contains a list of flashcard decks in 'data'
+      if (response['error'] == null || response['error'] == '') {
+        log(response['results'].toString());
         setState(() {
-          _flashCardDecks = List<Map<String, String>>.from(response['data']);
+          _flashCardDecks = [];
+          response['results'].forEach((deck) {
+            _flashCardDecks.add(<String, String>{
+              'title': deck[2].toString(),
+            });
+          });
         });
       } else {
         setState(() {
@@ -50,7 +57,7 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
       }
     } catch (e) {
       setState(() {
-        _errorMessage = "An error occurred while fetching the data."; // Handle other errors
+        _errorMessage = "An error occurred while fetching the data: $e"; // Handle other errors
       });
     } finally {
       setState(() {

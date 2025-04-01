@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePage(), // Use HomePage instead of LoginPage as the initial screen
+      home: LoginPage(), // Use HomePage instead of LoginPage as the initial screen
     );
   }
 }
