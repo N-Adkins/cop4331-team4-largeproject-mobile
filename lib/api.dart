@@ -24,9 +24,7 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(response.body);
-        if (body['jwtToken'] != null) {
-          Session.refresh(body['jwtToken']);
-        }
+        return body;
       } else {
         log("Returned status ${response.statusCode}");
       }

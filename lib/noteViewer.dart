@@ -7,8 +7,9 @@ import 'session.dart';
 
 class NoteViewer extends StatefulWidget {
   final int noteId;
+  final String title;
 
-  const NoteViewer({super.key, required this.noteId});
+  const NoteViewer({super.key, required this.noteId, required this.title});
 
   @override
   _NoteViewerState createState() => _NoteViewerState();
@@ -24,10 +25,11 @@ class _NoteViewerState extends State<NoteViewer> {
   void initState() {
     super.initState();
     noteId = widget.noteId;
-    loadData();
+    title = widget.title;
+    loadBody();
   }
 
-  Future<void> loadData() async {
+  Future<void> loadBody() async {
     var note = await ApiService.postJson('/note/$noteId', <String, dynamic>{
         'userId': Session.userId,
         'jwtToken': Session.token,
@@ -47,7 +49,10 @@ class _NoteViewerState extends State<NoteViewer> {
       appBar: AppBar(title: Text(title ?? 'Loading...')),
       body: Center(
         child: isLoading ? CircularProgressIndicator() : Markdown(
+          selectable: true,
           data: body!,
+          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+              .copyWith(textScaler: TextScaler.linear(1.5)),
         )
       )
     );
