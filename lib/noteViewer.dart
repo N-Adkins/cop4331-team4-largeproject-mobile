@@ -6,6 +6,10 @@ import 'dart:developer';
 import 'session.dart';
 
 class NoteViewer extends StatefulWidget {
+  final int noteId;
+
+  const NoteViewer({super.key, required this.noteId});
+
   @override
   _NoteViewerState createState() => _NoteViewerState();
 }
@@ -19,47 +23,28 @@ class _NoteViewerState extends State<NoteViewer> {
   @override
   void initState() {
     super.initState();
+    noteId = widget.noteId;
     loadData();
   }
 
   Future<void> loadData() async {
-    // This is all temporary for testing this out
-    var results = await ApiService.postJson('/search_notes/', <String, dynamic>{
-      'userId': Session.userId,
-      'search': 'Test',
-      'jwtToken': Session.token,
-    });
-    var noteId = results['results'][0][1];
-    var title = results['results'][0][2];
-    log(results.toString());
-
     var note = await ApiService.postJson('/note/$noteId', <String, dynamic>{
         'userId': Session.userId,
         'jwtToken': Session.token,
     });
     var body = note['body'][0];
-    log(note.toString());
 
     setState(() {
-      this.noteId = noteId;
-      this.title = title;
       this.body = body;
       isLoading = false;
       log('Updated note state');
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {});
-        log("Forced UI rebuild");
-      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Test note viewer")),
+      appBar: AppBar(title: Text(title ?? 'Loading...')),
       body: Center(
         child: isLoading ? CircularProgressIndicator() : Markdown(
           data: body!,
