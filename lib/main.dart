@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80),
         child: AppBar(
-          backgroundColor: Color.fromARGB(255, 50, 50, 50), // Dark Gray
+          backgroundColor: Color.fromARGB(255, 60, 60, 60), // Dark Gray
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
