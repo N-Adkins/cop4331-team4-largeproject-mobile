@@ -131,9 +131,75 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
 
   // Function to handle the edit action
   void _editDeck(DeckInfo deck) {
-    log('Editing deck: ${deck.title}');
-    // Navigate to the deck edit page or show a modal dialog to edit the deck.
+    // --- edit api begins
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController editdeckTitleController = TextEditingController();
+        return AlertDialog(
+          title: Text('Create a New Deck'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: editdeckTitleController,
+                decoration: InputDecoration(
+                  labelText: 'Deck Title',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Close the dialog without doing anything
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                String deckTitle = editdeckTitleController.text;
+                if(deckTitle == ''){
+                  deckTitle = deck.title;
+                }
+                // --- add api starts
+                ApiService.postJson("/update_flashcard_deck", <String, String>{
+                  "jwtToken": Session.token!,
+                  "userId": Session.userId.toString(),
+                  "deckId": deck.deckId.toString(),
+                  "title": deckTitle,
+                }).then((response) {
+                  if (response["error"] != null) {
+                    if (response["error"] == '') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("${deckTitle} successfully changed")),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(response["error"].toString())),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Internal Server Error"))
+                    );
+
+                  }
+                });
+                // --- add api ends
+                _fetchFlashCardDecks();
+                Navigator.pop(context);
+              },
+              child: Text('Confirm Change'),
+            ),
+          ],
+        );
+      },
+    );
+    // --- edit api ends
   }
+
 
   @override
   void dispose() {
