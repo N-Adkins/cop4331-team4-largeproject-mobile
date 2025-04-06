@@ -121,6 +121,75 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
               child: Text('Search'),
             ),
 
+            // Add Note Button
+            ElevatedButton(
+              onPressed: () {
+                // Show the dialog to add a deck
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    TextEditingController deckTitleController = TextEditingController();
+                    return AlertDialog(
+                      title: Text('Create New Note'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: deckTitleController,
+                            decoration: InputDecoration(
+                              labelText: 'Note Title',
+                            ),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            // Close the dialog without doing anything
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            String deckTitle = deckTitleController.text;
+                            // --- add api starts
+                            ApiService.postJson("/create_note", <String, String>{
+                              "jwtToken": Session.token!,
+                              "userId": Session.userId.toString(),
+                              "title": deckTitle,
+                            }).then((response) {
+                              if (response["error"] != null) {
+                                if (response["error"] == '') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("New Note successfully added")),
+                                  );
+                                  _fetchNotes();
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(response["error"].toString())),
+                                  );
+                                }
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("Internal Server Error"))
+                                );
+
+                              }
+                            });
+                            // --- add api ends
+                            Navigator.pop(context);
+                          },
+                          child: Text('Submit'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text('Add Note'),
+            ), //end of add note
+
             SizedBox(height: 20),
 
             // Show Loading Spinner
@@ -139,6 +208,7 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
                       title: Text(note.title),
+                      /*
                       trailing: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
@@ -147,6 +217,39 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
                           );
                         },
                         child: Text('Open'),
+                      ),
+                      */
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => NoteViewer(noteId: note.id, title: note.title)),
+                              );
+                            },
+                            child: Text('Open'),
+                          ),
+                          SizedBox(width: 8),
+                          ElevatedButton(
+                            //onPressed: () => _editDeck(deck),
+                            onPressed: () {
+                              log('Button pressed for edit');
+                              // Navigate to the deck details or view
+                            },
+                            child: Icon(Icons.edit),
+                          ),
+                          SizedBox(width: 8),
+                          ElevatedButton(
+                            //onPressed: () => _deleteDeck(deck),
+                            onPressed: () {
+                              log('Button pressed for delete');
+                              // Navigate to the deck details or view
+                            },
+                            child: Icon(Icons.delete),
+                          ),
+                        ],
                       ),
                     ),
                   );
