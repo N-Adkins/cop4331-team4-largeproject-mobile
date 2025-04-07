@@ -72,6 +72,64 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
     }
   }
 
+  // Function to handle the delete action
+  void _deleteNote(NoteInfo note) async {
+    bool? confirmed = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Note'),
+          content: Text('Are you sure you want to delete the note: "${note.title}"?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User canceled
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed
+                //--- delete API starts
+                ApiService.postJson("/delete_note", <String, String>{
+                  "jwtToken": Session.token!,
+                  "userId": Session.userId.toString(),
+                  "noteId": note.id.toString(),
+                }).then((response) {
+                  if (response["error"] != null) {
+                    if (response["error"] == '') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("${note.title} successfully deleted")),
+                      );
+                      _fetchNotes();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(response["error"].toString())),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Internal Server Error"))
+                    );
+
+                  }
+                });
+                // --- delete API ends
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      // Perform the delete action here (API call)
+      log('Deleting deck: ${note.title}');
+      // You can add the API call for deleting the deck here
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -208,17 +266,6 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
                       title: Text(note.title),
-                      /*
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => NoteViewer(noteId: note.id, title: note.title)),
-                          );
-                        },
-                        child: Text('Open'),
-                      ),
-                      */
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -229,24 +276,11 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
                                 MaterialPageRoute(builder: (context) => NoteViewer(noteId: note.id, title: note.title)),
                               );
                             },
-                            child: Text('Open'),
+                            child: Text('View'),
                           ),
                           SizedBox(width: 8),
                           ElevatedButton(
-                            //onPressed: () => _editDeck(deck),
-                            onPressed: () {
-                              log('Button pressed for edit');
-                              // Navigate to the deck details or view
-                            },
-                            child: Icon(Icons.edit),
-                          ),
-                          SizedBox(width: 8),
-                          ElevatedButton(
-                            //onPressed: () => _deleteDeck(deck),
-                            onPressed: () {
-                              log('Button pressed for delete');
-                              // Navigate to the deck details or view
-                            },
+                            onPressed: () => _deleteNote(note),
                             child: Icon(Icons.delete),
                           ),
                         ],
