@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:group4_mobile_app/flashcardViewer.dart';
 import 'dart:developer';
 import 'session.dart';
 import 'api.dart'; // Import ApiService
@@ -340,7 +342,10 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              log('Button pressed for ${deck.title}');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => FlashcardViewer(deckId: deck.deckId, title: deck.title)),
+                              );
                               // Navigate to the deck details or view
                             },
                             child: Text('Open'),
