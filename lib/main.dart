@@ -5,6 +5,7 @@ import 'about.dart';
 import 'register.dart';
 import 'searchFlashCardDeck.dart';
 import 'session.dart';
+import 'home.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,11 +26,59 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Variable to track the selected body content
-  Widget _currentBody = Center(
-    child: Text(
-      'Welcome to Clarity!',
-      style: TextStyle(fontSize: 24, color: Color.fromARGB(200, 208, 0, 255)),
+  Widget _currentBody = Container(
+    color: Color.fromARGB(20, 208, 0, 255), //background color
+    child: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center, //Center the column vertically
+        children: [
+          // Add the icon at the top
+          Image.asset(
+            'assets/images/clarity.png',
+            width: 120,
+            height: 120,
+          ),
+          SizedBox(height: 20),
+
+          Text(
+            'Welcome to Clarity!',
+            style: TextStyle(
+              fontSize: 32,
+            ),
+          ),
+          SizedBox(height: 20),
+
+          Text(
+            'Your go-to app for organizing notes',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'and flashcards with built-in',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'LLM integration.',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(height: 20),
+
+          Text(
+            '\nStay focused, stay clear.',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
     ),
   );
 
@@ -107,16 +156,9 @@ class _HomePageState extends State<HomePage> {
             ),
             // Home ListTile
             ListTile(
-              title: Text('Home'),
+              title: Text('Fun!'),
               onTap: () {
-                _updateBody(
-                  Center(
-                    child: Text(
-                      'Welcome to Clarity!',
-                      style: TextStyle(fontSize: 24, color: Color.fromARGB(200, 208, 0, 255)),
-                    ),
-                  ),
-                );
+                _updateBody(LandingPage());
                 Navigator.pop(context); // Close the drawer
               },
             ),
