@@ -12,7 +12,7 @@ class Flashcard {
   final String question;
   final String answer;
   final int cardId;
-  final int confidence;
+  int confidence;
 
   Flashcard({required this.question, required this.answer, required this.cardId, required this.confidence});
 }
@@ -34,6 +34,9 @@ class _FlashcardViewerState extends State<FlashcardViewer>
   List<Flashcard> cards = List<Flashcard>.empty(growable: true);
   int currentIndex = 0;
   bool showQuestion = true;
+  bool showConfidence = false;
+  int confidence = 0;
+  bool reachedEnd = false;
   bool isLoading = true;
 
   late AnimationController _controller;
@@ -87,9 +90,47 @@ class _FlashcardViewerState extends State<FlashcardViewer>
 
   void _nextCard() {
     setState(() {
-      currentIndex = (currentIndex + 1) % cards.length;
-      showQuestion = true;
+      if (showConfidence) {
+        ApiService.postJson('/rate_flash_card', <String, dynamic>{
+          'userId': Session.userId,
+          'deckId': deckId,
+          'cardId': cards[currentIndex].cardId,
+          'confidence': confidence,
+          'jwtToken': Session.token,
+        }).then((result) {
+          dev.log(result.toString());
+          var err = result['error'];
+          if (err != null && err != '' && err != 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(
+                    'Failed to send confidence to server: $err'))
+            );
+          } else {
+            cards[currentIndex].confidence = result['newScore'];
+          }
+        });
+
+        // If done
+        if (currentIndex == cards.length - 1) {
+
+        }
+
+        currentIndex = (currentIndex + 1) % cards.length;
+        showQuestion = true;
+        showConfidence = false;
+      } else {
+        showConfidence = true;
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
+    super.dispose();
   }
 
   @override
@@ -122,7 +163,33 @@ class _FlashcardViewerState extends State<FlashcardViewer>
 
               SizedBox(height: 16),
 
-              AnimatedBuilder(
+              showConfidence ? Column(
+                children: [
+                  Center(
+                    child: Text('How confident are you?'),
+                  ),
+                  ElevatedButton(onPressed: () {
+                    confidence = -2;
+                    _nextCard();
+                  }, child: Text('Not at all')),
+                  ElevatedButton(onPressed: () {
+                    confidence = -1;
+                    _nextCard();
+                  }, child: Text('Somewhat unsure')),
+                  ElevatedButton(onPressed: () {
+                    confidence = 0;
+                    _nextCard();
+                  }, child: Text('Neutral')),
+                  ElevatedButton(onPressed: () {
+                    confidence = 1;
+                    _nextCard();
+                  }, child: Text('Somewhat confident')),
+                  ElevatedButton(onPressed: () {
+                    confidence = 2;
+                    _nextCard();
+                  }, child: Text('Very confident')),
+                ],
+              ) : AnimatedBuilder(
                 animation: _flipAnimation,
                 builder: (context, child) {
                   // Detect when flip is halfway done then start showing the other side

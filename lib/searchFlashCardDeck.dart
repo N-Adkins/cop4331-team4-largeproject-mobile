@@ -348,7 +348,7 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
                               );
                               // Navigate to the deck details or view
                             },
-                            child: Text('Open'),
+                            child: Text('Review'),
                           ),
                           SizedBox(width: 8),
                           ElevatedButton(
