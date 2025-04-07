@@ -20,6 +20,7 @@ class _NoteViewerState extends State<NoteViewer> {
   String? title;
   String? body;
   bool isLoading = true;
+  bool aiIsLoading = false;
 
   @override
   void initState() {
@@ -46,7 +47,46 @@ class _NoteViewerState extends State<NoteViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title ?? 'Loading...')),
+      appBar: AppBar(
+        title: Text(title ?? 'Loading...'),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                if (aiIsLoading) {
+                  return;
+                }
+                setState(() { aiIsLoading = true; } );
+                ApiService.postJson('/flashcards/generate_from_note', <String, dynamic>{
+                  'noteId': noteId,
+                  'jwtToken': Session.token,
+                }).then((response) {
+                  setState(() { aiIsLoading = false; } );
+                  if (response["error"] != null) {
+                    if (response["error"] == "") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(
+                              'Successfully generated flashcard deck'))
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(
+                              response["error"].toString()
+                          ))
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(
+                            'Successfully generated flashcard deck'
+                        ))
+                    );
+                  }
+                });
+              },
+              child: aiIsLoading ? Text("Generating...") : Text("Generate Deck")
+          )
+        ]
+      ),
       body: Center(
         child: isLoading ? CircularProgressIndicator() : Markdown(
           selectable: true,
