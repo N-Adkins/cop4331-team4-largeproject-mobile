@@ -26,6 +26,7 @@ class _NoteViewerState extends State<NoteViewer> {
   bool isEditing = false;  //Track if we are editing
   TextEditingController _controller = TextEditingController();  //Controller for text input
 
+
   @override
   void initState() {
     super.initState();
@@ -79,20 +80,22 @@ class _NoteViewerState extends State<NoteViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(title ?? 'Loading...'),
-          actions: [
-            ElevatedButton(
-                onPressed: () {
-                  if (aiIsLoading) {
-                    return;
-                  }
-                  setState(() { aiIsLoading = true; });
-                  ApiService.postJson('/flashcards/generate_from_note', <String, dynamic>{
-                    'noteId': noteId,
-                    'jwtToken': Session.token,
-                  }).then((response) {
-                    setState(() { aiIsLoading = false; });
-                    if (response["error"] != null) {
+
+        title: Text(title ?? 'Loading...'),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                if (aiIsLoading) {
+                  return;
+                }
+                setState(() { aiIsLoading = true; } );
+                ApiService.postJson('/flashcards/generate_from_note', <String, dynamic>{
+                  'noteId': noteId,
+                  'jwtToken': Session.token,
+                }).then((response) {
+                  setState(() { aiIsLoading = false; } );
+                  if (response["error"] != null) {
+                    if (response["error"] == "") {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(
                               'Successfully generated flashcard deck'))
@@ -104,11 +107,18 @@ class _NoteViewerState extends State<NoteViewer> {
                           ))
                       );
                     }
-                  });
-                },
-                child: aiIsLoading ? Text("Generating...") : Text("Generate Deck")
-            )
-          ]
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(
+                            'Successfully generated flashcard deck'
+                        ))
+                    );
+                  }
+                });
+              },
+              child: aiIsLoading ? Text("Generating...") : Text("Generate Deck")
+          )
+        ]
       ),
       body: Center(
         child: isLoading
