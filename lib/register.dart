@@ -105,6 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               SnackBar(content: Text(
                                   'Successfully registered $firstName $lastName, please check your email to verify'))
                           );
+                          Navigator.pop(context);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(
