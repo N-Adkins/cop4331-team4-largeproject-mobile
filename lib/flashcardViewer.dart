@@ -112,7 +112,7 @@ class _FlashcardViewerState extends State<FlashcardViewer>
 
         // If done
         if (currentIndex == cards.length - 1) {
-
+          reachedEnd = true;
         }
 
         currentIndex = (currentIndex + 1) % cards.length;
@@ -155,7 +155,7 @@ class _FlashcardViewerState extends State<FlashcardViewer>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 100.0),
                 child: LinearProgressIndicator(
-                  value: currentIndex / cards.length,
+                  value: reachedEnd ? 1 : currentIndex / cards.length,
                   backgroundColor: Colors.grey[300],
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                 )
@@ -188,6 +188,23 @@ class _FlashcardViewerState extends State<FlashcardViewer>
                     confidence = 2;
                     _nextCard();
                   }, child: Text('Very confident')),
+                ],
+              ) : (reachedEnd ? Column(
+                children: [
+                  Center(child: Text('Completed review!', style:
+                  TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54),
+                    textAlign: TextAlign.center)),
+                  SizedBox(height: 16),
+                  Center(child: ElevatedButton(onPressed: () {
+                    setState(() {
+                      currentIndex = 0;
+                      showQuestion = true;
+                      showConfidence = false;
+                      reachedEnd = false;
+                    });
+                  }, child: Text('Reset?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: Colors.deepPurple),
+                    textAlign: TextAlign.center))
+                  ),
                 ],
               ) : AnimatedBuilder(
                 animation: _flipAnimation,
@@ -249,12 +266,12 @@ class _FlashcardViewerState extends State<FlashcardViewer>
                     )
                   );
                 }
-              )
+              ))
             ]
           )
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: reachedEnd ? null : FloatingActionButton(
         onPressed: _nextCard,
         tooltip: 'Next Card',
         child: Icon(Icons.arrow_forward),
