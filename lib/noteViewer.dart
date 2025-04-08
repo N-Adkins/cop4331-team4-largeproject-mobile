@@ -40,7 +40,7 @@ class _NoteViewerState extends State<NoteViewer> {
       'userId': Session.userId,
       'jwtToken': Session.token,
     });
-    var body = note['body'][0];
+    var body = note['body'][0] ?? ""; //if the body is null, assign a blank body
 
     setState(() {
       this.body = body;
