@@ -311,6 +311,9 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
             ),
             SizedBox(height: 20),
 
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Equal space between buttons
+          children: [
             // Search Button
             ElevatedButton(
               onPressed: _fetchFlashCardDecks,
@@ -322,7 +325,8 @@ class _SearchFlashCardDeck extends State<searchFlashCardDeck> {
               onPressed: () => _addDeck(),
               child: Text('Add Deck'),
             ),
-
+            ],
+        ),
             SizedBox(height: 20),
 
             // Show Loading Spinner

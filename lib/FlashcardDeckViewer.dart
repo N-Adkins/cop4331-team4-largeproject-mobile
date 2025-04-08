@@ -314,11 +314,21 @@ class _FlashcardDeckViewerState extends State<FlashcardDeckViewer>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(title ?? 'Flashcards'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // When the back button is pressed, navigate to the previous screen
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('Flashcard Decks', style: TextStyle(
+            Text('${title}', style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
               color: Colors.deepPurple,
@@ -340,6 +350,9 @@ class _FlashcardDeckViewerState extends State<FlashcardDeckViewer>{
             ),
             SizedBox(height: 20),
 
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Equal space between buttons
+          children: [
             // Search Button
             ElevatedButton(
               onPressed: _fetchFlashCardDecks,
@@ -370,6 +383,9 @@ class _FlashcardDeckViewerState extends State<FlashcardDeckViewer>{
               onPressed: () => _addCard(),
               child: Text('Add Card'),
             ),
+
+            ],
+        ),
 
             SizedBox(height: 20),
 
