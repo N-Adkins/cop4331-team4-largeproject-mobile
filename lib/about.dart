@@ -52,7 +52,7 @@ class AboutPage extends StatelessWidget {
   Widget _buildGroupMember(String imagePath, String memberName) {
     // Check if the imagePath is one of the default ones (Cristian, Noah, Preston)
     bool isDefaultIcon = false;
-    if (memberName == 'Preston - API' || memberName == 'Cristian - Frontend' || memberName == 'Noah - App') {
+    if (memberName == 'Preston - API' || memberName == 'Cristian - Frontend') {
       isDefaultIcon = true;
     }
 
