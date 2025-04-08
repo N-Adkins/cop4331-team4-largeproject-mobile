@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 //the default generated webpage, TO BE DELETED
 
@@ -48,6 +49,12 @@ class EmptyPageState extends State<EmptyPage>
 
   @override
   Widget build(BuildContext context) {
+    // Force app to be vertical
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     return Scaffold(
       // Replace the AppBar with TabBar
       appBar: PreferredSize(
