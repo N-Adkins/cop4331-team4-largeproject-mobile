@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:group4_mobile_app/session.dart';
 import 'package:http/http.dart' as http;
 
 class SignupResponse {
@@ -22,7 +23,8 @@ class ApiService {
         body: jsonEncode(payload),
       );
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        Map<String, dynamic> body = jsonDecode(response.body);
+        return body;
       } else {
         log("Returned status ${response.statusCode}");
       }

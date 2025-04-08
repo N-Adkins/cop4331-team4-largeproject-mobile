@@ -14,4 +14,8 @@ class Session {
     Session.firstName = decoded.payload['firstName'];
     Session.lastName = decoded.payload['lastName'];
   }
+
+  static void refresh(String token) {
+    Session.token = token;
+  }
 }

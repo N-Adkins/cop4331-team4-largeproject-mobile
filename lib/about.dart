@@ -50,12 +50,24 @@ class AboutPage extends StatelessWidget {
 
   // Widget to build each group member's image and name
   Widget _buildGroupMember(String imagePath, String memberName) {
+    // Check if the imagePath is one of the default ones (Cristian, Noah, Preston)
+    bool isDefaultIcon = false;
+    if (memberName == 'Preston - API' || memberName == 'Cristian - Frontend' || memberName == 'Noah - App') {
+      isDefaultIcon = true;
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,  // Makes the column take the least space it needs
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // CircleAvatar for image
-        CircleAvatar(
+        // If imagePath is a default one, show an Icon, otherwise show the image
+        isDefaultIcon
+            ? CircleAvatar(
+          radius: 32, // Adjust the size of the avatar
+          backgroundColor: Colors.blueAccent,
+          child: Icon(Icons.person, size: 40, color: Colors.white), // Default person icon
+        )
+            : CircleAvatar(
           radius: 32, // Adjust the size of the avatar
           backgroundImage: AssetImage(imagePath), // Path to image asset
           backgroundColor: Colors.transparent, // Remove background color
