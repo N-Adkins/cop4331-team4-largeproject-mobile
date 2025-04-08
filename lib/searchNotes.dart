@@ -72,6 +72,74 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
     }
   }
 
+  void _addNote() async{
+
+  // Show the dialog to add a deck
+  showDialog(
+  context: context,
+  builder: (BuildContext context) {
+  TextEditingController deckTitleController = TextEditingController();
+  return AlertDialog(
+  title: Text('Create New Note'),
+  content: Column(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+  TextField(
+  controller: deckTitleController,
+  decoration: InputDecoration(
+  labelText: 'Note Title',
+  ),
+  ),
+  ],
+  ),
+  actions: [
+  TextButton(
+  onPressed: () {
+  // Close the dialog without doing anything
+  Navigator.pop(context);
+  },
+  child: Text('Cancel'),
+  ),
+  TextButton(
+  onPressed: () {
+  String deckTitle = deckTitleController.text;
+  // --- add api starts
+  ApiService.postJson("/create_note", <String, String>{
+  "jwtToken": Session.token!,
+  "userId": Session.userId.toString(),
+  "title": deckTitle,
+  }).then((response) {
+  if (response["error"] != null) {
+  if (response["error"] == '') {
+  ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text("New Note successfully added")),
+  );
+  //_fetchNotes();
+  } else {
+  ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text(response["error"].toString())),
+  );
+  }
+  } else {
+  ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text("Internal Server Error"))
+  );
+
+  }
+  });
+  // --- add api ends
+  Navigator.pop(context);
+  _fetchNotes();
+  },
+  child: Text('Submit'),
+  ),
+  ],
+  );
+  },
+  );
+
+}
+
   // Function to handle the delete action
   void _deleteNote(NoteInfo note) async {
     bool? confirmed = await showDialog(
@@ -181,71 +249,7 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
 
             // Add Note Button
             ElevatedButton(
-              onPressed: () {
-                // Show the dialog to add a deck
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    TextEditingController deckTitleController = TextEditingController();
-                    return AlertDialog(
-                      title: Text('Create New Note'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            controller: deckTitleController,
-                            decoration: InputDecoration(
-                              labelText: 'Note Title',
-                            ),
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            // Close the dialog without doing anything
-                            Navigator.pop(context);
-                          },
-                          child: Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            String deckTitle = deckTitleController.text;
-                            // --- add api starts
-                            ApiService.postJson("/create_note", <String, String>{
-                              "jwtToken": Session.token!,
-                              "userId": Session.userId.toString(),
-                              "title": deckTitle,
-                            }).then((response) {
-                              if (response["error"] != null) {
-                                if (response["error"] == '') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("New Note successfully added")),
-                                  );
-                                  //_fetchNotes();
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(response["error"].toString())),
-                                  );
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Internal Server Error"))
-                                );
-
-                              }
-                            });
-                            // --- add api ends
-                            Navigator.pop(context);
-                            _fetchNotes();
-                          },
-                          child: Text('Submit'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+              onPressed: () => _addNote(),
               child: Text('Add Note'),
             ), //end of add note
 
