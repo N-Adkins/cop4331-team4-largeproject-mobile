@@ -88,6 +88,81 @@ class _FlashcardDeckViewerState extends State<FlashcardDeckViewer>{
     }
   }
 
+  void _addCard() async {
+    // Show the dialog to add a deck
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController deckTitleController = TextEditingController();
+        TextEditingController cardAnswerController = TextEditingController();
+        return AlertDialog(
+          title: Text('Create a New Card'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: deckTitleController,
+                decoration: InputDecoration(
+                  labelText: 'Card Question',
+                ),
+              ),
+              TextField(
+                controller: cardAnswerController,
+                decoration: InputDecoration(
+                  labelText: 'Card Answer',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Close the dialog without doing anything
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                String deckTitle = deckTitleController.text;
+                String cardAnswer = cardAnswerController.text;
+                // --- add api starts
+                ApiService.postJson("/add_flash_card", <String, String>{
+                  "jwtToken": Session.token!,
+                  "userId": Session.userId.toString(),
+                  "deckId": deckId.toString(),
+                  "question": deckTitle,
+                  "answer": cardAnswer,
+                }).then((response) {
+                  if (response["error"] != null) {
+                    if (response["error"] == '') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Card successfully added")),
+                      );
+                      // Fetch flashcards again to show the newly added card
+                      _fetchFlashCardDecks();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(response["error"].toString())),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Internal Server Error")));
+                  }
+                });
+                // --- add api ends
+                Navigator.pop(context);
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   // Function to handle the delete action
   void _deleteDeck(Flashcard deck) async {
     bool? confirmed = await showDialog(
@@ -273,11 +348,18 @@ class _FlashcardDeckViewerState extends State<FlashcardDeckViewer>{
 
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FlashcardViewer(deckId: deckId!, title: title!)),
-                );
-                // Navigate to the deck details or view
+                if(_decks.length < 1){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Please add a card before reviewing"))
+                  );
+                }
+                else{
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FlashcardViewer(deckId: deckId!, title: title!)),
+                  );
+                  // Navigate to the deck details or view
+                }
               },
               child: Text('Review'),
             ),
@@ -285,83 +367,8 @@ class _FlashcardDeckViewerState extends State<FlashcardDeckViewer>{
 
             // Add Deck Button
             ElevatedButton(
-              onPressed: () {
-                // Show the dialog to add a deck
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    TextEditingController deckTitleController = TextEditingController();
-                    TextEditingController cardAnswerController = TextEditingController();
-                    return AlertDialog(
-                      title: Text('Create a New Card'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            controller: deckTitleController,
-                            decoration: InputDecoration(
-                              labelText: 'Card Question',
-                            ),
-                          ),
-
-                          TextField(
-                            controller: cardAnswerController,
-                            decoration: InputDecoration(
-                              labelText: 'Card Answer',
-                            ),
-                          ),
-
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            // Close the dialog without doing anything
-                            Navigator.pop(context);
-                          },
-                          child: Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            String deckTitle = deckTitleController.text;
-                            String cardAnswer = cardAnswerController.text;
-                            // --- add api starts
-                            ApiService.postJson("/add_flash_card", <String, String>{
-                              "jwtToken": Session.token!,
-                              "userId": Session.userId.toString(),
-                              "deckId": deckId.toString(),
-                              "question": deckTitle,
-                              "answer": cardAnswer,
-                            }).then((response) {
-                              if (response["error"] != null) {
-                                if (response["error"] == '') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Card successfully added")),
-                                  );
-                                  _fetchFlashCardDecks();
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(response["error"].toString())),
-                                  );
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Internal Server Error"))
-                                );
-
-                              }
-                            });
-                            // --- add api ends
-                            Navigator.pop(context);
-                          },
-                          child: Text('Submit'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: Text('Add Deck'),
+              onPressed: () => _addCard(),
+              child: Text('Add Card'),
             ),
 
             SizedBox(height: 20),
