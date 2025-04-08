@@ -11,7 +11,6 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   String? email;
-  String? newPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -34,47 +33,27 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 onSaved: (value) => email = value,
               ),
 
-              TextFormField(
-                decoration: InputDecoration(labelText: 'New Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a new password';
-                  }
-                  return null;
-                },
-                onSaved: (value) => newPassword = value,
-              ),
-
               SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    ApiService.postJson('/resetpassword', <String, dynamic>{
+                    ApiService.postJson('/forgot_password', <String, dynamic>{
                       'email': email!,
-                      'password': newPassword!,
                     }).then((response) {
-                      if (response["error"] != null) {
-                        if (response["error"] == "") {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(
-                                  'Successfully reset password'))
-                          );
-                          Navigator.pop(context);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(
-                                  response["error"].toString()
-                              ))
-                          );
-                        }
+                      if (response['message'] == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(
+                                'Internal server error'))
+                        );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(
-                              'Internal server error',
+                                response['message'].toString()
                             ))
                         );
+                        Navigator.pop(context);
                       }
                     });
                   }
