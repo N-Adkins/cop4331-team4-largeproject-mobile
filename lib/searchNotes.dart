@@ -222,7 +222,7 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text("New Note successfully added")),
                                   );
-                                  _fetchNotes();
+                                  //_fetchNotes();
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(response["error"].toString())),
@@ -237,6 +237,7 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
                             });
                             // --- add api ends
                             Navigator.pop(context);
+                            _fetchNotes();
                           },
                           child: Text('Submit'),
                         ),
