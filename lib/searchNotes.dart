@@ -241,6 +241,9 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
             ),
             SizedBox(height: 20),
 
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Equal space between buttons
+        children: [
             // Search Button
             ElevatedButton(
               onPressed: _fetchNotes,
@@ -253,6 +256,8 @@ class _SearchNotesPageState extends State<SearchNotesPage> {
               child: Text('Add Note'),
             ), //end of add note
 
+          ],
+      ),
             SizedBox(height: 20),
 
             // Show Loading Spinner
