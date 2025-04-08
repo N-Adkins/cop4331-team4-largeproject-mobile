@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:group4_mobile_app/forgotPassword.dart';
 import 'package:flutter/services.dart';
 import 'package:group4_mobile_app/session.dart';
 import 'register.dart';
@@ -163,6 +164,27 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+
+              SizedBox(height: 20),
+
+              // Reset password
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                    );
+                  },
+                  child: Text(
+                    'Forgot your password?',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
+                    )
+                  )
+                )
+              )
             ],
           ),
         ),
